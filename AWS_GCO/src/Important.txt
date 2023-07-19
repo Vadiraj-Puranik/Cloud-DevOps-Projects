@@ -1,0 +1,5 @@
+1: Deloitte emails are filter at top level -> Fix this 
+2: All of the employees email id should be in SES 
+3: Even if employee email id is not in SES manager will get the leave but employee will not get notification 
+on submission status/approval/rejection --> Domain verification will help but who to reach out for this -> Ask Pramod
+

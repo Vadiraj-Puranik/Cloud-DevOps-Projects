@@ -1,0 +1,167 @@
+import json
+import boto3
+
+s3_client = boto3.client('s3')
+ses_client = boto3.client('ses')
+
+def handle_manager_response(event, context):
+    leave_id = event['pathParameters']['leave_id']
+    response = event['queryStringParameters']['response']
+
+    # Retrieve the leave request data from S3
+    response = s3_client.get_object(
+        Bucket='gco-leavemanagement',
+        Key=f'leaves/{leave_id}.json'
+    )
+    leave_data = json.loads(response['Body'].read().decode('utf-8'))
+
+    # Update the leave request status based on the manager's response
+    if response == 'approve':
+        leave_data['status'] = 'approved'
+    else:
+        leave_data['status'] = 'rejected'
+
+    # Store the updated leave request data back to S3
+    s3_client.put_object(
+        Bucket='gco-leavemanagement',
+        Key=f'leaves/{leave_id}.json',
+        Body=json.dumps(leave_data)
+    )
+
+    # Send a notification email to the employee
+    email_body = f"Your leave request with ID {leave_id} has been {leave_data['status']}."
+    ses_client.send_email(
+        Source='shreyaspuranik008@gmail.com',
+        Destination={
+            'ToAddresses': [leave_data['email']]
+        },
+        Message={
+            'Subject': {
+                'Data': 'Leave Request Status Update'
+            },
+            'Body': {
+                'Text': {
+                    'Data': email_body
+                }
+            }
+        }
+    )
+
+    return {
+        'statusCode': 200,
+        'body': 'Manager response handled successfully'
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import boto3
+# import json
+
+# s3_client = boto3.client('s3')
+# ses_client = boto3.client('ses')
+
+# def get_leave_data(leave_id):
+#     # Retrieve the leave request data from S3
+#     response = s3_client.get_object(
+#         Bucket='gco-leavemanagement',
+#         Key=f'leaves/{leave_id}.json'
+#     )
+    
+#     # Read the object content and parse it as JSON
+#     leave_data = json.loads(response['Body'].read().decode('utf-8'))
+    
+#     return leave_data
+
+
+# def handle_manager_response(event, context):
+#     # Parse the leave ID and manager response from the event data
+#     leave_id = event['pathParameters']['leave_id']
+#     manager_response = event['body']
+    
+#     # Retrieve the leave request data from S3
+#     leave_data = get_leave_data(leave_id)
+    
+#     # Update the leave request status in the data
+#     leave_data['approval_status'] = manager_response
+    
+#     # Store the updated leave request data in S3
+#     s3_client.put_object(
+#         Bucket='gco-leavemanagement',
+#         Key=f'leaves/{leave_id}.json',
+#         Body=json.dumps(leave_data)
+#     )
+    
+#     # Send notification email to the employee
+#     send_employee_notification(leave_data)
+    
+#     return {
+#         'statusCode': 200,
+#         'body': 'Manager response handled successfully'
+#     }
+
+# def send_employee_notification(leave_data):
+#     email_body = f"Your leave request has been {leave_data['approval_status']} by the manager."
+    
+#     ses_client.send_email(
+#         Source='shreyaspuranik008@gmail.com',
+#         Destination={
+#             'ToAddresses': [leave_data['email']]
+#         },
+#         Message={
+#             'Subject': {
+#                 'Data': 'Leave Request Status Update'
+#             },
+#             'Body': {
+#                 'Text': {
+#                     'Data': email_body
+#                 }
+#             }
+#         }
+#     )

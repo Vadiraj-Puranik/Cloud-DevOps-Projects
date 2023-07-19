@@ -1,0 +1,152 @@
+import json
+import boto3
+
+ses_client = boto3.client('ses')
+s3_client = boto3.client('s3')
+
+def notify_manager(event, context):
+    leave_id = event['leave_id']
+
+    # Retrieve the leave request data from S3
+    response = s3_client.get_object(
+        Bucket='gco-leavemanagement',
+        Key=f'leaves/{leave_id}.json'
+    )
+    leave_data = json.loads(response['Body'].read().decode('utf-8'))
+
+    # Compose the email body with the leave details
+    email_body = f"New leave request from {leave_data['name']}:\n\n"
+    email_body += f"Leave Type: {leave_data['leaveType']}\n"
+    email_body += f"Start Date: {leave_data['startDate']}\n"
+    email_body += f"End Date: {leave_data['endDate']}\n"
+    email_body += f"Reason: {leave_data['reason']}\n\n"
+    email_body += f"Approve: https://your-frontend-url/approve/{leave_id}\n"
+    email_body += f"Reject: https://your-frontend-url/reject/{leave_id}\n"
+
+    # Send email to the manager
+    ses_client.send_email(
+        Source='shreyaspuranik008@gmail.com',
+        Destination={
+            'ToAddresses': ['shreyaspuranik008@gmail.com']
+        },
+        Message={
+            'Subject': {
+                'Data': 'New Leave Request'
+            },
+            'Body': {
+                'Text': {
+                    'Data': email_body
+                }
+            }
+        }
+    )
+
+    return {
+        'statusCode': 200,
+        'body': 'Manager notified successfully'
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import boto3
+# import json
+# import uuid
+
+
+# ses_client = boto3.client('ses')
+
+
+# def get_leave_data(leave_id):
+#     # Retrieve the leave request data from S3
+#     response = s3_client.get_object(
+#         Bucket='gco-leavemanagement',
+#         Key=f'leaves/{leave_id}.json'
+#     )
+
+#     # Read the object content and parse it as JSON
+#     leave_data = json.loads(response['Body'].read().decode('utf-8'))
+
+#     return leave_data
+
+# def notify_manager(event, context, leave_data):
+#     # Retrieve the necessary details from the leave_data dictionary
+#     name = leave_data['name']
+#     email = leave_data['email']
+#     leave_type = leave_data['leaveType']
+#     start_date = leave_data['startDate']
+#     end_date = leave_data['endDate']
+#     reason = leave_data['reason']
+#     leave_id = event['pathParameters']['leave_id']
+#     manager_email = "shreyaspuranik008@gmail.com"
+
+#     # Compose the email body with the leave details and approval/rejection link
+#     email_body = f"New leave request from {name}:\n\n"
+#     email_body += f"Leave Type: {leave_type}\n"
+#     email_body += f"Start Date: {start_date}\n"
+#     email_body += f"End Date: {end_date}\n"
+#     email_body += f"Reason: {reason}\n\n"
+#     email_body += f"Approve: https://your-frontend-url/approve/{leave_id}\n"
+#     email_body += f"Reject: https://your-frontend-url/reject/{leave_id}\n"
+    
+#     # Send email to the manager
+    
+#     ses_client.send_email(
+#         Source='shreyaspuranik008@gmail.com',
+#         Destination={
+#             'ToAddresses': [manager_email]
+#         },
+#         Message={
+#             'Subject': {
+#                 'Data': 'New Leave Request'
+#             },
+#             'Body': {
+#                 'Text': {
+#                     'Data': email_body
+#                 }
+#             }
+#         }
+#     )
+
+#     return {
+#         'statusCode': 200,
+#         'body': 'Manager notified successfully'
+#     }
