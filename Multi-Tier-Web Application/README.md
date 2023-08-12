@@ -3,7 +3,7 @@ Technologies Used<br>
 
 1:**Cloud** : AWS<br>
 2:**Servers** :  EC2<br>
-3:**Web service**: NGINX<br>
+3:**Web and App Service**: NGINX and TOMCAT<br>
 4:**Message Broker**: RabbitMQ<br>
 5:**Database**: MYSQL<br>
 6:**Provisioning** : Terraform
