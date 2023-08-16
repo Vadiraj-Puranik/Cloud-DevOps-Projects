@@ -1,0 +1,40 @@
+from flask import Flask, render_template, request, redirect
+import mysql.connector
+import memcache
+
+app = Flask(__name__)
+
+# Connect to Memcache
+mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+
+# Connect to MariaDB
+db = mysql.connector.connect(
+    host="localhost",
+    user="your_db_user",
+    password="your_db_password",
+    database="your_db_name"
+)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    name = request.form['name']
+    email = request.form['email']
+
+    # Insert data into MariaDB
+    cursor = db.cursor()
+    query = "INSERT INTO users (name, email) VALUES (%s, %s)"
+    cursor.execute(query, (name, email))
+    db.commit()
+    cursor.close()
+
+    # Store data in Memcache
+    mc.set(name, email)
+
+    return redirect('/')
+
+if __name__ == '__main__':
+    app.run(debug=True)
