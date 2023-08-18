@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Leave Approval/Rejection</title>
+    <style>
+        /* Add your custom CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Leave Approval/Rejection</h1>
+    <form id="approvalForm">
+        <label for="response">Response:</label>
+        <select name="response" id="response">
+            <option value="approve">Approve</option>
+            <option value="reject">Reject</option>
+        </select>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+    document.getElementById('approvalForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        var response = document.getElementById('response').value;
+        
+        fetch('https://r0nuutbh6a.execute-api.us-east-1.amazonaws.com/v1/approve/response?response=' + response, {
+            method: 'POST'
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            alert(data.message); // Display the response message to the user
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
+    });
+    </script>
+</body>
+</html>
