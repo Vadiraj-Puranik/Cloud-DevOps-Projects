@@ -2,8 +2,6 @@ import boto3
 import json
 import uuid
 
-
-
 s3_client = boto3.client('s3')
 ses_client = boto3.client('ses')
 sns_client = boto3.client('sns')
