@@ -4,7 +4,6 @@ import json
 ses_client = boto3.client('ses')
 sns_client = boto3.client('sns')
 
-
 def notify_manager(event, context):
     try:
         # Extract the leave data from the SNS event
