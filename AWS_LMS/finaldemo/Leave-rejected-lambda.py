@@ -1,6 +1,7 @@
 import boto3
 import json
 
+
 s3_client = boto3.client('s3')
 ses_client = boto3.client('ses')
 
