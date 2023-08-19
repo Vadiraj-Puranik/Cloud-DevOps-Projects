@@ -7,6 +7,7 @@ ses_client = boto3.client('ses')
 BUCKET_NAME = 'leavemanagement'
 LEAVES_FOLDER = 'leaves/'
 
+
 def handle_approval(event, context):
     try:
         leave_id = event['queryStringParameters']['leave_id']
