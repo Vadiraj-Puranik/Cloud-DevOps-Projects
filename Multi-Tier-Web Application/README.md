@@ -15,3 +15,4 @@ Technologies Used<br>
 ![Rabbitmq](https://github.com/Vadiraj-Puranik/Cloud-DevOps-Projects/assets/113619300/23203ec8-e83c-42b7-a203-3a2e9de29c01)
 ![Mysql](https://github.com/Vadiraj-Puranik/Cloud-DevOps-Projects/assets/113619300/49adc001-e825-4960-9475-537c99fe30dd)
 ![Terraform](https://github.com/Vadiraj-Puranik/Cloud-DevOps-Projects/assets/113619300/619925f0-bc55-445a-a920-63655a86e2ff)
+
